@@ -8,6 +8,17 @@ import (
 	"github.com/allnichols/monkey/token"
 )
 
+const (
+	_ int = iota
+	LOWEST
+	EQUALS // ==
+	LESSGREATER // > or <
+	SUM // +
+	PRODUCT // *
+	PREFIX // -X or !X
+	CALL // myFunc(X)
+)
+
 type Parser struct {
 	l *lexer.Lexer
 	errors []string
@@ -122,6 +133,10 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	}
 	leftExp := prefix()
 	return leftExp
+}
+
+func (p *Parser) parseIdentifier() ast.Expression {
+	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 func (p *Parser) Errors() []string {
